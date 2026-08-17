@@ -24,6 +24,8 @@
       '<path d="M3 8V5a2 2 0 0 1 2-2h3" /><path d="M16 3h3a2 2 0 0 1 2 2v3" /><path d="M21 16v3a2 2 0 0 1-2 2h-3" /><path d="M8 21H5a2 2 0 0 1-2-2v-3" /><path d="M7 14l3-3.5L13 13l4-5" />',
     vision:
       '<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z" /><circle cx="12" cy="12" r="3" />',
+    deck:
+      '<rect x="8" y="5" width="11" height="15" rx="2.5" /><path d="M14.5 3.6 6.2 5.7a2 2 0 0 0-1.4 2.5l2.6 9.6" />',
     arrow: '<path d="M5 12h14" /><path d="m13 6 6 6-6 6" />',
     left: '<path d="m14 6-6 6 6 6" />',
     right: '<path d="m10 6 6 6-6 6" />',
@@ -45,6 +47,12 @@
       (ICONS[name] || '') +
       '</svg>'
     );
+  }
+
+  /** The drawn scene for a tool, or the plain emblem if art is missing. */
+  function scene(tool) {
+    var art = (window.FELIX_ART || {})[tool.art];
+    return art || '<span class="pcard__emblem">' + icon(tool.icon) + '</span>';
   }
 
   function esc(value) {
@@ -174,6 +182,7 @@
   var overlay = document.getElementById('overlay');
   var detail = document.getElementById('detail');
   var themeToggle = document.getElementById('themeToggle');
+  var progressChip = document.getElementById('progressChip');
   var active = 0;
 
   function cardMarkup(tool, index) {
@@ -195,9 +204,7 @@
       '<span class="pcard__face">' +
       '<span class="pcard__art">' +
       corner.replace('{side}', 'tl') +
-      '<span class="pcard__emblem">' +
-      icon(tool.icon) +
-      '</span>' +
+      scene(tool) +
       corner.replace('{side}', 'br').replace(esc(tool.code || ''), '') +
       (tool.badge
         ? '<span class="pcard__flag" data-tone="' +
@@ -256,12 +263,34 @@
     return pos > count / 2 ? pos - count : pos;
   }
 
+  /**
+   * Lay a card out for its slot in the fan. Everything is derived from the
+   * distance to the middle, so three tools and ten tools both work: cards
+   * further out sit lower, smaller and more tilted, and anything past the
+   * fourth ring is parked out of sight behind the deck.
+   */
+  function place(card, pos) {
+    var depth = Math.abs(pos);
+    var dir = pos < 0 ? -1 : 1;
+    var side =
+      depth === 0 ? 'center' : depth <= 2 ? 'side' : depth === 3 ? 'far' : 'hidden';
+
+    card.style.setProperty('--x', pos === 0 ? '0' : dir * (64 + (depth - 1) * 42));
+    card.style.setProperty('--y', depth * 28 + 'px');
+    card.style.setProperty('--r', dir * Math.min(depth, 4) * 10 + 'deg');
+    card.style.setProperty('--s', Math.max(1 - depth * 0.13, 0.55));
+    card.style.setProperty('--z', String(20 - depth));
+    card.setAttribute('data-side', side);
+    card.setAttribute('data-pos', String(pos));
+    return side;
+  }
+
   /** Position every card relative to the active one, and refresh state. */
   function paint() {
     tools.forEach(function (tool, index) {
       var card = deckEl.children[index];
       var state = stateOf(tool.id);
-      card.setAttribute('data-pos', String(positionOf(index)));
+      place(card, positionOf(index));
       card.setAttribute('data-state', state);
       card.setAttribute('aria-hidden', index === active ? 'false' : 'true');
       card.setAttribute('tabindex', index === active ? '0' : '-1');
@@ -276,6 +305,9 @@
       done === tools.length
         ? 'All ' + tools.length + ' unlocked — you’re set up.'
         : done + ' of ' + tools.length + ' unlocked';
+    progressChip.textContent = tools.length
+      ? Math.round((done / tools.length) * 100) + '%'
+      : '0%';
 
     var openId = detail.getAttribute('data-id');
     if (openId) syncDetailButton(openId);
@@ -296,6 +328,9 @@
       '</button>' +
       '<div class="detail__inner">' +
       '<div class="detail__head">' +
+      '<span class="detail__scene">' +
+      scene(tool) +
+      '</span>' +
       '<span class="detail__emblem">' +
       icon(tool.icon) +
       '</span>' +
@@ -595,11 +630,14 @@
 
   /* ----------------------------------------------------------------- boot */
 
+  document.getElementById('brandIcon').innerHTML = ICONS.deck;
+  document.getElementById('toolCount').textContent =
+    tools.length + (tools.length === 1 ? ' tool' : ' tools');
   document.getElementById('iconMoon').innerHTML = ICONS.moon;
   document.getElementById('iconSun').innerHTML = ICONS.sun;
 
   initTheme();
   build();
-  // Start on the middle card of the three.
+  // Start with the middle card of the fan facing front.
   goTo(Math.floor(tools.length / 2));
 })();

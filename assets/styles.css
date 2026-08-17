@@ -106,6 +106,9 @@ body {
 
 body {
   margin: 0;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
   font-family: var(--font-sans);
   background: var(--bg);
   color: var(--text);
@@ -148,26 +151,122 @@ button {
 }
 
 /* ==========================================================================
+   Banner + masthead
+   ========================================================================== */
+
+.banner {
+  height: clamp(56px, 9vh, 96px);
+  background: linear-gradient(90deg, #0b3b3b, #0d6ea8 45%, var(--blue-bright) 78%, #7fd8ff);
+}
+
+.masthead {
+  padding: 1.4rem clamp(1rem, 4vw, 2.5rem) 0.4rem;
+}
+
+.masthead__row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  max-width: 1240px;
+  margin-inline: auto;
+}
+
+.brandmark {
+  width: clamp(46px, 5vw, 58px);
+  height: clamp(46px, 5vw, 58px);
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  flex: none;
+  color: #fff;
+  background: linear-gradient(150deg, var(--blue-bright), #0b6fa8);
+  box-shadow: 0 12px 28px -14px rgba(36, 169, 232, 0.9);
+}
+
+.brandmark svg {
+  width: 52%;
+  height: 52%;
+}
+
+.masthead__titles {
+  flex: 1 1 220px;
+  min-width: 0;
+}
+
+.masthead h1 {
+  margin: 0;
+  font-size: clamp(1.4rem, 3.4vw, 2.1rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--blue);
+}
+
+.masthead p {
+  margin: 0.3rem 0 0;
+  font-size: 0.92rem;
+  color: var(--text-muted);
+}
+
+.masthead__meta {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-left: auto;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 0.95rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text-muted);
+}
+
+.chip--count {
+  color: var(--blue);
+  border-color: color-mix(in srgb, var(--blue) 45%, transparent);
+  background: color-mix(in srgb, var(--blue) 12%, var(--surface));
+}
+
+.chip--progress {
+  background: var(--lime-chip-bg);
+  color: var(--lime-chip-text);
+  border-color: transparent;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  padding: 0.5rem 1rem;
+}
+
+/* ==========================================================================
    Stage + deck
    ========================================================================== */
 
 .stage {
-  min-height: 100%;
+  flex: 1 1 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1.5rem;
-  padding: 2.5rem 1rem 2rem;
+  gap: clamp(1rem, 2.5vh, 1.75rem);
+  padding: clamp(1rem, 3vh, 2.25rem) 1rem clamp(1.25rem, 3vh, 2rem);
 }
 
 .deck {
   position: relative;
-  width: min(100%, 760px);
+  width: min(100%, 1000px);
   height: var(--card-h);
-  perspective: 1600px;
-  --card-w: clamp(200px, 26vw, 300px);
-  --card-h: clamp(310px, 40vw, 450px);
+  perspective: 1800px;
+  --card-h: clamp(340px, 58vh, 600px);
+  --card-w: calc(var(--card-h) * 0.7);
 }
 
 /* ==========================================================================
@@ -185,9 +284,10 @@ button {
   border: none;
   background: none;
   cursor: pointer;
-  transform-origin: 50% 115%;
-  transform: translateX(calc(var(--x) * 1%)) translateY(var(--y))
-    rotate(var(--r)) scale(var(--s));
+  transform-origin: 50% 118%;
+  transform: translateX(calc(var(--x) * 1%))
+    translateY(calc(var(--y) + var(--hover-y, 0px))) rotate(var(--r))
+    scale(calc(var(--s) * var(--hover-s, 1)));
   z-index: var(--z);
   transition: transform 0.55s var(--ease), filter 0.45s var(--ease),
     opacity 0.45s var(--ease);
@@ -206,62 +306,36 @@ button {
   box-shadow: var(--card-shadow-active), 0 0 0 3px var(--blue-bright);
 }
 
-/* Side cards sit back, dimmed and tilted, like a fanned hand. */
-.pcard[data-pos='-1'] {
-  --x: -72;
-  --y: 30px;
-  --r: -10deg;
-  --s: 0.86;
-  --z: 2;
+/* Side cards sit back, dimmed and tilted, like a fanned hand.
+   Geometry (--x/--y/--r/--s/--z) is set per card in app.js so the fan works
+   for three tools or ten; these rules only set the mood. */
+.pcard[data-side='side'] {
   filter: var(--side-filter);
   opacity: var(--side-opacity);
 }
 
-.pcard[data-pos='1'] {
-  --x: 72;
-  --y: 30px;
-  --r: 10deg;
-  --s: 0.86;
-  --z: 2;
+.pcard[data-side='far'] {
   filter: var(--side-filter);
-  opacity: var(--side-opacity);
+  opacity: calc(var(--side-opacity) * 0.45);
 }
 
-.pcard[data-pos='-2'] {
-  --x: -105;
-  --y: 60px;
-  --r: -20deg;
-  --s: 0.78;
-  --z: 1;
-  filter: var(--side-filter);
-  opacity: calc(var(--side-opacity) * 0.7);
+/* Anything deeper than that is parked behind the fan. */
+.pcard[data-side='hidden'] {
+  opacity: 0;
+  pointer-events: none;
 }
 
-.pcard[data-pos='2'] {
-  --x: 105;
-  --y: 60px;
-  --r: 20deg;
-  --s: 0.78;
-  --z: 1;
-  filter: var(--side-filter);
-  opacity: calc(var(--side-opacity) * 0.7);
-}
-
-.pcard[data-pos='0'] {
-  --z: 5;
-}
-
-.pcard[data-pos='-1']:hover,
-.pcard[data-pos='1']:hover {
-  --y: 14px;
-  --s: 0.9;
+.pcard[data-side='side']:hover,
+.pcard[data-side='far']:hover {
+  --hover-y: -16px;
+  --hover-s: 1.05;
   filter: var(--side-filter-hover);
   opacity: var(--side-opacity-hover);
 }
 
-.pcard[data-pos='0']:hover {
-  --y: -8px;
-  --s: 1.02;
+.pcard[data-side='center']:hover {
+  --hover-y: -10px;
+  --hover-s: 1.02;
 }
 
 /* Card face — a real card: white/graphite stock, thin edge, inner rule. */
@@ -279,7 +353,7 @@ button {
   transition: box-shadow 0.45s var(--ease);
 }
 
-.pcard[data-pos='0'] .pcard__face {
+.pcard[data-side='center'] .pcard__face {
   box-shadow: var(--card-shadow-active);
 }
 
@@ -305,8 +379,11 @@ button {
 .pcard__art {
   position: relative;
   flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
   display: grid;
-  place-items: center;
+  place-items: stretch;
+  padding: clamp(0.5rem, 1vw, 0.9rem);
   background: linear-gradient(155deg, var(--c1), var(--c2));
 }
 
@@ -339,11 +416,181 @@ button {
   height: 46%;
 }
 
+
+/* ==========================================================================
+   Card artwork (assets/art.js)
+   ========================================================================== */
+
+.scene {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  display: block;
+}
+
+.scene text {
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+}
+
+.a-grid path {
+  stroke: var(--tint);
+  stroke-width: 1;
+  opacity: 0.14;
+  fill: none;
+}
+
+.a-line,
+.a-line-soft {
+  fill: none;
+  stroke: var(--tint);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.a-line-soft {
+  stroke-width: 2;
+  opacity: 0.45;
+}
+
+.a-fill {
+  fill: var(--tint);
+  opacity: 0.14;
+  stroke: none;
+}
+
+.a-rule {
+  fill: none;
+  stroke: var(--tint);
+  stroke-width: 1.5;
+  stroke-dasharray: 5 5;
+  opacity: 0.7;
+}
+
+.a-range {
+  fill: var(--tint);
+  fill-opacity: 0.07;
+  stroke: var(--tint);
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+  opacity: 0.8;
+}
+
+.a-ink {
+  fill: var(--tint);
+}
+
+.a-ink-stroke {
+  fill: none;
+  stroke: var(--tint);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.scene .a-text {
+  fill: var(--tint);
+  font-size: 8px;
+  opacity: 0.75;
+}
+
+.scene .a-score {
+  fill: var(--text);
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: 30px;
+  letter-spacing: -0.02em;
+}
+
+.a-track,
+.a-arc {
+  fill: none;
+  stroke-linecap: round;
+  stroke-width: 8;
+}
+
+.a-track {
+  stroke: var(--tint);
+  opacity: 0.16;
+}
+
+.a-arc {
+  stroke: var(--tint);
+  stroke-dasharray: 123 200;
+}
+
+.a-chip rect {
+  fill: var(--tint);
+  fill-opacity: 0.12;
+  stroke: var(--tint);
+  stroke-opacity: 0.35;
+  stroke-width: 1;
+}
+
+.a-up rect {
+  fill: #2fbf7a;
+}
+
+.a-down rect {
+  fill: #d8637d;
+}
+
+.a-bar rect {
+  fill: var(--tint);
+  opacity: 0.28;
+}
+
+.a-bar--hot rect {
+  opacity: 0.85;
+}
+
+.a-ring {
+  fill: none;
+  stroke: var(--tint);
+  stroke-width: 1.5;
+  opacity: 0.5;
+}
+
+.a-ring--far {
+  opacity: 0.22;
+}
+
+.a-reticle path {
+  fill: none;
+  stroke: var(--tint);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.a-glass {
+  fill: var(--card-face);
+  opacity: 0.55;
+}
+
+.a-lens {
+  fill: none;
+  stroke: var(--tint);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+
+.a-lens-mark {
+  fill: none;
+  stroke: var(--tint);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.9;
+}
+
 /* Promo flag on the art */
 .pcard__flag {
   position: absolute;
   left: 50%;
-  bottom: 18px;
+  top: 12px;
+  z-index: 2;
   transform: translateX(-50%);
   padding: 0.3rem 0.7rem;
   border-radius: 999px;
@@ -446,7 +693,7 @@ button {
   height: 13px;
 }
 
-.pcard[data-pos='0'] .pcard__hint {
+.pcard[data-side='center'] .pcard__hint {
   opacity: 1;
   transform: none;
 }
@@ -563,25 +810,23 @@ button {
 }
 
 .theme-toggle {
-  position: fixed;
-  top: 1.1rem;
-  right: 1.1rem;
-  z-index: 20;
-  width: 38px;
-  height: 38px;
+  width: 42px;
+  height: 42px;
+  flex: none;
   border-radius: 50%;
   display: grid;
   place-items: center;
   cursor: pointer;
-  background: transparent;
-  border: 1px solid var(--border-strong);
-  color: var(--text-muted);
-  transition: color 0.2s var(--ease), transform 0.2s var(--ease);
+  background: var(--surface);
+  border: 1.5px solid color-mix(in srgb, var(--blue) 55%, transparent);
+  color: var(--blue);
+  transition: color 0.2s var(--ease), transform 0.2s var(--ease),
+    background-color 0.2s var(--ease);
 }
 
 .theme-toggle:hover {
-  color: var(--text);
-  transform: scale(1.06);
+  transform: translateY(-1px) scale(1.04);
+  background: color-mix(in srgb, var(--blue) 12%, var(--surface));
 }
 
 .theme-toggle svg {
@@ -664,11 +909,38 @@ html[data-theme='dark'] .theme-toggle .icon-moon {
 }
 
 .detail__head {
+  position: relative;
+  overflow: hidden;
   padding: 1.7rem 1.8rem 1.5rem;
   display: flex;
   gap: 1rem;
   align-items: flex-start;
   background: linear-gradient(155deg, var(--c1), var(--c2));
+}
+
+.detail__head > .detail__scene {
+  position: absolute;
+  z-index: 0;
+  top: 50%;
+  right: -2%;
+  width: 240px;
+  height: 240px;
+  transform: translateY(-50%);
+  opacity: 0.3;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 60%);
+  mask-image: linear-gradient(90deg, transparent, #000 60%);
+}
+
+.detail__head > * {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 620px) {
+  .detail__head > .detail__scene {
+    display: none;
+  }
 }
 
 .detail__emblem {
@@ -701,7 +973,7 @@ html[data-theme='dark'] .theme-toggle .icon-moon {
 .detail__summary {
   margin: 0;
   color: var(--text-muted);
-  max-width: 56ch;
+  max-width: 46ch;
 }
 
 .badge {
@@ -728,6 +1000,7 @@ html[data-theme='dark'] .theme-toggle .icon-moon {
 
 .close {
   position: absolute;
+  z-index: 5;
   top: 1rem;
   right: 1rem;
   width: 40px;
@@ -1016,16 +1289,12 @@ html[data-theme='dark'] .theme-toggle .icon-moon {
 
 @media (max-width: 700px) {
   .deck {
-    --card-w: clamp(180px, 54vw, 240px);
-    --card-h: clamp(280px, 82vw, 370px);
+    --card-h: clamp(300px, 46vh, 420px);
+    --card-w: min(calc(var(--card-h) * 0.7), 62vw);
   }
 
-  .pcard[data-pos='-1'] {
-    --x: -56;
-  }
-
-  .pcard[data-pos='1'] {
-    --x: 56;
+  .masthead__meta {
+    margin-left: 0;
   }
 
   .detail__head,

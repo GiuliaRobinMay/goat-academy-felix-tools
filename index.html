@@ -21,33 +21,60 @@
     <link rel="stylesheet" href="assets/styles.css" />
   </head>
   <body>
-    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch theme">
-      <svg
-        id="iconMoon"
-        class="icon-moon"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="1.8"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"
-      ></svg>
-      <svg
-        id="iconSun"
-        class="icon-sun"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="1.8"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"
-      ></svg>
-    </button>
+    <div class="banner"></div>
+
+    <header class="masthead">
+      <div class="masthead__row">
+        <span class="brandmark">
+          <svg
+            id="brandIcon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          ></svg>
+        </span>
+
+        <div class="masthead__titles">
+          <h1>Felix's Tools</h1>
+          <p>Everything Felix built for you — in one place.</p>
+        </div>
+
+        <div class="masthead__meta">
+          <span class="chip chip--count" id="toolCount"></span>
+          <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch theme">
+            <svg
+              id="iconMoon"
+              class="icon-moon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            ></svg>
+            <svg
+              id="iconSun"
+              class="icon-sun"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            ></svg>
+          </button>
+          <span class="chip chip--progress" id="progressChip">0%</span>
+        </div>
+      </div>
+    </header>
 
     <main class="stage">
-      <h1 class="visually-hidden">Felix's Tools</h1>
 
       <div class="deck" id="deck"></div>
 
@@ -72,6 +99,7 @@
     </div>
 
     <script src="assets/data.js"></script>
+    <script src="assets/art.js"></script>
     <script src="assets/app.js"></script>
   </body>
 </html>

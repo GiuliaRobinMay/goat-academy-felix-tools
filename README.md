@@ -34,12 +34,37 @@ python3 -m http.server 8000
 
 | File | Purpose |
 | --- | --- |
-| `index.html` | Page shell |
-| `assets/data.js` | **All content** — the three tools, steps, links, videos |
+| `index.html` | Page shell — banner, masthead, deck, overlay |
+| `assets/data.js` | **All content** — the tools, steps, links, videos |
+| `assets/art.js` | The drawn scene on each card face |
 | `assets/app.js` | Deck positioning, card-to-panel animation, progress tracking |
 | `assets/styles.css` | Design tokens (light base, dark overrides) and layout |
 
 To change any wording, link or badge, edit `assets/data.js` only.
+
+## Adding a tool
+
+Append an object to `window.FELIX_TOOLS` in `assets/data.js`. The deck reads
+the list at load: the card, the dot, the counter and the "n of N unlocked"
+line all follow, and the fan geometry is computed from each card's distance to
+the middle, so four, five or ten tools fan correctly with no CSS to touch.
+
+Fields: `id` (unique, also the progress key), `code` (corner pip), `name`,
+`tagline`, `kicker`, `summary`, `accent` (`blue` / `teal` / `violet`), `icon`
+(`chart` / `scanner` / `vision`), `ctaLabel`, `ctaUrl` and `steps`. Optional:
+`badge` + `badgeTone`, `highlights`, `note`, `video`, `support`, `sourceUrl`,
+and `art` — the key of a scene in `assets/art.js`. Leave `art` off and the
+card falls back to the plain icon emblem, so a new tool works before its
+artwork exists.
+
+## Where the content comes from
+
+Access steps, links, videos and support contacts are verbatim from the three
+community articles. The feature bullets come from public product information —
+the Winston launch announcement (Stock Radar, Metal Minute, ETF Edge, 10,800+
+instruments, 11 exchanges) and tradevision.io (screener with breakout
+indicator, real-time options chains and dark pool activity, options profit
+calculator). Worth a read-through by someone at GOAT before this goes live.
 
 ## Tracking who has accessed all three
 

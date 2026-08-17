@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Felix's Tools · GOAT Academy</title>
+    <meta
+      name="description"
+      content="The three tools Felix built for the GOAT Academy community — the Winston App, the Visual Breakout Scanner and TradeVision."
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐐</text></svg>"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body>
+    <div class="topbar"></div>
+
+    <header class="masthead">
+      <div class="wrap masthead__row">
+        <span class="brandmark">
+          <svg
+            id="brandIcon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          ></svg>
+        </span>
+
+        <div class="masthead__titles">
+          <h1>Felix's Tools</h1>
+          <p>Everything Felix built for you — in one place.</p>
+        </div>
+
+        <div class="masthead__meta">
+          <span class="chip chip--edition" id="toolCount">3 tools</span>
+          <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch theme">
+            <svg
+              id="iconMoon"
+              class="icon-moon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            ></svg>
+            <svg
+              id="iconSun"
+              class="icon-sun"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            ></svg>
+          </button>
+          <span class="chip chip--progress" id="progressChip">0%</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="wrap layout">
+      <div>
+        <section class="hero">
+          <p class="eyebrow">Welcome</p>
+          <h2>Three tools. One setup session.</h2>
+          <p class="hero__quote">
+            “Get all three switched on and you’ve got the same screens I trade
+            from every morning.”
+          </p>
+          <p class="hero__by">· Felix, founder of GOAT Academy</p>
+        </section>
+
+        <div class="section-head">
+          <h2>The toolkit</h2>
+          <span>Tap a card to open the full setup guide</span>
+        </div>
+
+        <div class="cards" id="cards"></div>
+      </div>
+
+      <aside class="rail">
+        <section class="panel" id="progressPanel">
+          <h2>Your setup</h2>
+          <div class="meter"><div class="meter__fill" id="meterFill"></div></div>
+          <ul class="checklist" id="checklist"></ul>
+          <p class="panel__note" id="progressNote"></p>
+          <button class="reset" id="resetProgress" type="button">Reset my progress</button>
+        </section>
+
+        <section class="panel">
+          <h2>Need a hand?</h2>
+          <p class="panel__note" style="margin-top: 0">
+            Stuck on any of the three? Message your CSM in the community or email
+            <a href="mailto:felix@goatacademy.org">felix@goatacademy.org</a> and
+            we’ll get you sorted.
+          </p>
+        </section>
+      </aside>
+    </main>
+
+    <footer class="foot wrap">GOAT Academy · Felix's Tools</footer>
+
+    <div
+      class="overlay"
+      id="overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="detailTitle"
+      aria-hidden="true"
+    >
+      <article class="detail" id="detail"></article>
+    </div>
+
+    <script src="assets/data.js"></script>
+    <script src="assets/app.js"></script>
+  </body>
+</html>

@@ -64,9 +64,7 @@ window.FELIX_TOOLS = [
       body: 'Message your CSM or email <strong>felix@goatacademy.org</strong> and we’ll get you sorted.',
       linkLabel: 'Email felix@goatacademy.org',
       linkUrl: 'mailto:felix@goatacademy.org'
-    },
-    sourceUrl:
-      'https://friends.goatacademy.org/posts/felixs-visual-breakout-scanner-now-available-in-the-winston-app'
+    }
   },
   {
     id: 'winston',
@@ -111,8 +109,7 @@ window.FELIX_TOOLS = [
       body: 'Message our Winston App support team directly on Mighty.',
       linkLabel: 'Message Winston support',
       linkUrl: 'https://friends.goatacademy.org/members/40480342'
-    },
-    sourceUrl: 'https://friends.goatacademy.org/posts/winston-app'
+    }
   },
   {
     id: 'tradevision',
@@ -163,7 +160,6 @@ window.FELIX_TOOLS = [
       body: 'For any issues please contact the TradeVision team directly.',
       linkLabel: 'Email help@tradevision.io',
       linkUrl: 'mailto:help@tradevision.io'
-    },
-    sourceUrl: 'https://friends.goatacademy.org/posts/tradevision-97741146'
+    }
   }
 ];

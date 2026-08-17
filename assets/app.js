@@ -430,13 +430,6 @@
         '</a></section>';
     }
 
-    if (tool.sourceUrl) {
-      html +=
-        '<a class="source-link" href="' +
-        esc(tool.sourceUrl) +
-        '" target="_blank" rel="noopener">Read the original post in the community →</a>';
-    }
-
     return html + '</div></div>';
   }
 

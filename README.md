@@ -11,14 +11,16 @@ All copy comes from the three articles in the community space
 
 ## What it does
 
-- Three promotional cards. Clicking one enlarges it out of its own position
-  into a full detail panel with the access steps, links, walkthrough video and
-  support contact.
-- Dark and light mode. Dark is the default; the toggle in the header remembers
-  the member's choice.
+- Three cards fanned like a hand: one upright in the middle, the other two
+  tilted left and right. Click a side card and it takes the middle; click the
+  middle card and it enlarges out of its own position into the full setup
+  guide — steps, links, walkthrough video and support contact.
+- Arrow keys, the arrow buttons, the dots and swipe all move the deck.
+- Dark and light mode. Dark is the default; the toggle top-right remembers the
+  member's choice.
 - Access tracking: opening a tool's link marks it as *opened*, and the
-  **"I've got access"** button marks it *confirmed*. The header percentage and
-  the "Your setup" rail show how far along the member is.
+  **"I've got access"** button marks it *confirmed*. A green seal appears on
+  the card and the counter under the deck reads "n of 3 unlocked".
 
 ## Running it
 
@@ -34,7 +36,7 @@ python3 -m http.server 8000
 | --- | --- |
 | `index.html` | Page shell |
 | `assets/data.js` | **All content** — the three tools, steps, links, videos |
-| `assets/app.js` | Rendering, card-to-panel animation, progress tracking |
+| `assets/app.js` | Deck positioning, card-to-panel animation, progress tracking |
 | `assets/styles.css` | Design tokens (light base, dark overrides) and layout |
 
 To change any wording, link or badge, edit `assets/data.js` only.
@@ -63,5 +65,5 @@ first visit), so an embed can pass the Mighty member ID through.
 
 - Point `data-progress-endpoint` at a real collector to get a completion report
   across members.
-- Swap the placeholder hero quote for Felix's actual words.
-- Add a card image / screenshot per tool if promo art becomes available.
+- Drop real promo art onto the card faces when it exists (currently an emblem
+  on a tinted ground).

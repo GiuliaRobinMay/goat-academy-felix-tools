@@ -7,47 +7,8 @@
  */
 window.FELIX_TOOLS = [
   {
-    id: 'winston',
-    name: 'Winston App',
-    tagline: 'The home base',
-    kicker: 'Core platform',
-    summary:
-      'Felix’s all-in-one trading app. One passwordless login gets you the dashboard, the watchlists and every tool Felix ships — including the Breakout Scanner.',
-    badge: 'Included',
-    badgeTone: 'lime',
-    accent: 'blue',
-    icon: 'chart',
-    ctaLabel: 'Open the Winston App',
-    ctaUrl: 'https://app.goatacademy.org/login',
-    highlights: [
-      'No password — you log in with a one-time email link',
-      'Breakout Scanner lives in the left-hand tab',
-      'Works in any browser, desktop or mobile'
-    ],
-    steps: [
-      {
-        title: 'Visit the Winston app',
-        body: 'Go to <a href="https://app.goatacademy.org/login" target="_blank" rel="noopener">app.goatacademy.org/login</a>.'
-      },
-      {
-        title: 'Input your email',
-        body: 'Check your inbox for an email with a one-time authenticator link from <strong>felix@goatacademy.org</strong>.'
-      },
-      {
-        title: 'Click the link',
-        body: 'You get access to the Winston App and you will see the Breakout Scanner on the left tab.'
-      }
-    ],
-    support: {
-      title: 'Still having trouble?',
-      body: 'Message our Winston App support team directly on Mighty.',
-      linkLabel: 'Message Winston support',
-      linkUrl: 'https://friends.goatacademy.org/members/40480342'
-    },
-    sourceUrl: 'https://friends.goatacademy.org/posts/winston-app'
-  },
-  {
     id: 'breakout-scanner',
+    code: 'SCAN',
     name: 'Visual Breakout Scanner',
     tagline: 'Felix’s own scanner',
     kicker: 'Inside the Winston App',
@@ -94,7 +55,49 @@ window.FELIX_TOOLS = [
       'https://friends.goatacademy.org/posts/felixs-visual-breakout-scanner-now-available-in-the-winston-app'
   },
   {
+    id: 'winston',
+    code: 'WIN',
+    name: 'Winston App',
+    tagline: 'The home base',
+    kicker: 'Core platform',
+    summary:
+      'Felix’s all-in-one trading app. One passwordless login gets you the dashboard, the watchlists and every tool Felix ships — including the Breakout Scanner.',
+    badge: 'Included',
+    badgeTone: 'lime',
+    accent: 'blue',
+    icon: 'chart',
+    ctaLabel: 'Open the Winston App',
+    ctaUrl: 'https://app.goatacademy.org/login',
+    highlights: [
+      'No password — you log in with a one-time email link',
+      'Breakout Scanner lives in the left-hand tab',
+      'Works in any browser, desktop or mobile'
+    ],
+    steps: [
+      {
+        title: 'Visit the Winston app',
+        body: 'Go to <a href="https://app.goatacademy.org/login" target="_blank" rel="noopener">app.goatacademy.org/login</a>.'
+      },
+      {
+        title: 'Input your email',
+        body: 'Check your inbox for an email with a one-time authenticator link from <strong>felix@goatacademy.org</strong>.'
+      },
+      {
+        title: 'Click the link',
+        body: 'You get access to the Winston App and you will see the Breakout Scanner on the left tab.'
+      }
+    ],
+    support: {
+      title: 'Still having trouble?',
+      body: 'Message our Winston App support team directly on Mighty.',
+      linkLabel: 'Message Winston support',
+      linkUrl: 'https://friends.goatacademy.org/members/40480342'
+    },
+    sourceUrl: 'https://friends.goatacademy.org/posts/winston-app'
+  },
+  {
     id: 'tradevision',
+    code: 'TV',
     name: 'TradeVision',
     tagline: '90 days free',
     kicker: 'Partner tool',

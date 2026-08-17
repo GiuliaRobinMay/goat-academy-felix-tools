@@ -21,100 +21,44 @@
     <link rel="stylesheet" href="assets/styles.css" />
   </head>
   <body>
-    <div class="topbar"></div>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch theme">
+      <svg
+        id="iconMoon"
+        class="icon-moon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      ></svg>
+      <svg
+        id="iconSun"
+        class="icon-sun"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      ></svg>
+    </button>
 
-    <header class="masthead">
-      <div class="wrap masthead__row">
-        <span class="brandmark">
-          <svg
-            id="brandIcon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.8"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          ></svg>
-        </span>
+    <main class="stage">
+      <h1 class="visually-hidden">Felix's Tools</h1>
 
-        <div class="masthead__titles">
-          <h1>Felix's Tools</h1>
-          <p>Everything Felix built for you — in one place.</p>
-        </div>
+      <div class="deck" id="deck"></div>
 
-        <div class="masthead__meta">
-          <span class="chip chip--edition" id="toolCount">3 tools</span>
-          <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch theme">
-            <svg
-              id="iconMoon"
-              class="icon-moon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.8"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            ></svg>
-            <svg
-              id="iconSun"
-              class="icon-sun"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.8"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            ></svg>
-          </button>
-          <span class="chip chip--progress" id="progressChip">0%</span>
-        </div>
-      </div>
-    </header>
+      <nav class="deck-nav" aria-label="Choose a tool">
+        <button class="nav-btn" id="prevBtn" type="button" aria-label="Previous tool"></button>
+        <div class="dots" id="dots"></div>
+        <button class="nav-btn" id="nextBtn" type="button" aria-label="Next tool"></button>
+      </nav>
 
-    <main class="wrap layout">
-      <div>
-        <section class="hero">
-          <p class="eyebrow">Welcome</p>
-          <h2>Three tools. One setup session.</h2>
-          <p class="hero__quote">
-            “Get all three switched on and you’ve got the same screens I trade
-            from every morning.”
-          </p>
-          <p class="hero__by">· Felix, founder of GOAT Academy</p>
-        </section>
-
-        <div class="section-head">
-          <h2>The toolkit</h2>
-          <span>Tap a card to open the full setup guide</span>
-        </div>
-
-        <div class="cards" id="cards"></div>
-      </div>
-
-      <aside class="rail">
-        <section class="panel" id="progressPanel">
-          <h2>Your setup</h2>
-          <div class="meter"><div class="meter__fill" id="meterFill"></div></div>
-          <ul class="checklist" id="checklist"></ul>
-          <p class="panel__note" id="progressNote"></p>
-          <button class="reset" id="resetProgress" type="button">Reset my progress</button>
-        </section>
-
-        <section class="panel">
-          <h2>Need a hand?</h2>
-          <p class="panel__note" style="margin-top: 0">
-            Stuck on any of the three? Message your CSM in the community or email
-            <a href="mailto:felix@goatacademy.org">felix@goatacademy.org</a> and
-            we’ll get you sorted.
-          </p>
-        </section>
-      </aside>
+      <p class="deck-status" id="deckStatus"></p>
     </main>
-
-    <footer class="foot wrap">GOAT Academy · Felix's Tools</footer>
 
     <div
       class="overlay"

@@ -1,10 +1,12 @@
 /**
- * Felix's Tools — display app.
+ * Felix's Tools — a three-card deck.
  *
- * Three promo cards. Click one and it enlarges into a full detail panel with
- * the access steps, links and walkthrough video. Members confirm they got in,
- * and the progress is kept in localStorage (and mirrored to an optional
- * endpoint / parent frame so it can be collected later).
+ * Three cards fanned like a hand: one upright in the middle, the others
+ * tilted left and right. Click a side card and it takes the middle. Click the
+ * middle card and it opens into the full setup guide.
+ *
+ * Members confirm they got into each tool; progress is kept in localStorage
+ * and mirrored to an optional endpoint / parent frame so it can be collected.
  */
 (function () {
   'use strict';
@@ -22,10 +24,10 @@
       '<path d="M3 8V5a2 2 0 0 1 2-2h3" /><path d="M16 3h3a2 2 0 0 1 2 2v3" /><path d="M21 16v3a2 2 0 0 1-2 2h-3" /><path d="M8 21H5a2 2 0 0 1-2-2v-3" /><path d="M7 14l3-3.5L13 13l4-5" />',
     vision:
       '<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z" /><circle cx="12" cy="12" r="3" />',
-    map: '<path d="M9 4 3 6.5v13L9 17l6 2.5 6-2.5v-13L15 6.5 9 4z" /><path d="M9 4v13" /><path d="M15 6.5v13" />',
     arrow: '<path d="M5 12h14" /><path d="m13 6 6 6-6 6" />',
+    left: '<path d="m14 6-6 6 6 6" />',
+    right: '<path d="m10 6 6 6-6 6" />',
     check: '<path d="m4 12 5 5L20 6" />',
-    circle: '<circle cx="12" cy="12" r="9" />',
     external:
       '<path d="M14 4h6v6" /><path d="M20 4 10 14" /><path d="M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5" />',
     close: '<path d="M5 5l14 14" /><path d="M19 5 5 19" />',
@@ -85,7 +87,7 @@
       /* private mode — the UI still works for this session */
     }
     report(id);
-    render();
+    paint();
   }
 
   /**
@@ -158,113 +160,130 @@
     try {
       localStorage.setItem(THEME_KEY, theme);
     } catch (err) {}
-    var toggle = document.getElementById('themeToggle');
-    if (toggle) {
-      toggle.setAttribute(
-        'aria-label',
-        theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'
-      );
-    }
+    themeToggle.setAttribute(
+      'aria-label',
+      theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'
+    );
   }
 
-  /* ---------------------------------------------------------------- cards */
+  /* ----------------------------------------------------------------- deck */
 
-  var cardsEl = document.getElementById('cards');
-  var checklistEl = document.getElementById('checklist');
-  var meterEl = document.getElementById('meterFill');
-  var progressChip = document.getElementById('progressChip');
-  var progressNote = document.getElementById('progressNote');
-  var progressPanel = document.getElementById('progressPanel');
+  var deckEl = document.getElementById('deck');
+  var dotsEl = document.getElementById('dots');
+  var statusEl = document.getElementById('deckStatus');
   var overlay = document.getElementById('overlay');
   var detail = document.getElementById('detail');
+  var themeToggle = document.getElementById('themeToggle');
+  var active = 0;
 
-  function statusLabel(state) {
-    if (state === 'done') return 'Access confirmed';
-    if (state === 'opened') return 'Opened — confirm it';
-    return 'Not opened yet';
-  }
+  function cardMarkup(tool, index) {
+    // Corner pips, the way a playing card carries its rank and suit.
+    var corner =
+      '<span class="pcard__corner pcard__corner--{side}">' +
+      esc(tool.code || '') +
+      icon(tool.icon) +
+      '</span>';
 
-  function cardMarkup(tool) {
-    var state = stateOf(tool.id);
     return (
-      '<button class="card" type="button" data-id="' +
+      '<button class="pcard" type="button" data-id="' +
       esc(tool.id) +
+      '" data-index="' +
+      index +
       '" data-accent="' +
       esc(tool.accent) +
       '" aria-haspopup="dialog">' +
-      '<div class="card__top">' +
-      '<span class="card__icon">' +
+      '<span class="pcard__face">' +
+      '<span class="pcard__art">' +
+      corner.replace('{side}', 'tl') +
+      '<span class="pcard__emblem">' +
       icon(tool.icon) +
       '</span>' +
+      corner.replace('{side}', 'br').replace(esc(tool.code || ''), '') +
       (tool.badge
-        ? '<span class="badge badge--' +
-          esc(tool.badgeTone || 'blue') +
+        ? '<span class="pcard__flag" data-tone="' +
+          esc(tool.badgeTone || 'lime') +
           '">' +
           esc(tool.badge) +
           '</span>'
         : '') +
-      '</div>' +
-      '<div>' +
-      '<div class="card__kicker">' +
+      '<span class="pcard__seal">' +
+      icon('check') +
+      '</span>' +
+      '</span>' +
+      '<span class="pcard__label">' +
+      '<span class="pcard__kicker">' +
       esc(tool.kicker) +
-      '</div>' +
-      '<h3>' +
+      '</span>' +
+      '<span class="pcard__name">' +
       esc(tool.name) +
-      '</h3>' +
-      '</div>' +
-      '<p class="card__summary">' +
-      esc(tool.summary) +
-      '</p>' +
-      '<div class="card__foot">' +
-      '<span class="card__open">Open' +
+      '</span>' +
+      '<span class="pcard__tagline">' +
+      esc(tool.tagline) +
+      '</span>' +
+      '<span class="pcard__hint">Open' +
       icon('arrow') +
       '</span>' +
-      '<span class="status" data-state="' +
-      state +
-      '">' +
-      icon(state === 'done' ? 'check' : 'circle') +
-      statusLabel(state) +
       '</span>' +
-      '</div>' +
+      '</span>' +
       '</button>'
     );
   }
 
-  function render() {
-    var done = confirmedCount();
-    var pct = tools.length ? Math.round((done / tools.length) * 100) : 0;
-
-    cardsEl.innerHTML = tools.map(cardMarkup).join('');
-
-    checklistEl.innerHTML = tools
-      .map(function (tool) {
-        var state = stateOf(tool.id);
+  function build() {
+    deckEl.innerHTML = tools.map(cardMarkup).join('');
+    dotsEl.innerHTML = tools
+      .map(function (tool, index) {
         return (
-          '<li data-state="' +
-          state +
-          '"><span class="tick">' +
-          icon('check') +
-          '</span>' +
+          '<button class="dot" type="button" data-index="' +
+          index +
+          '" aria-label="' +
           esc(tool.name) +
-          '</li>'
+          '"></button>'
         );
       })
       .join('');
+    paint();
+  }
 
-    meterEl.style.width = pct + '%';
-    progressChip.textContent = pct + '%';
-    progressNote.textContent =
+  /**
+   * Where a card sits relative to the active one. The deck wraps, so with
+   * three cards the active one is always flanked by the other two rather
+   * than ending up at one end of the fan.
+   */
+  function positionOf(index) {
+    var count = tools.length;
+    var pos = (((index - active) % count) + count) % count;
+    return pos > count / 2 ? pos - count : pos;
+  }
+
+  /** Position every card relative to the active one, and refresh state. */
+  function paint() {
+    tools.forEach(function (tool, index) {
+      var card = deckEl.children[index];
+      var state = stateOf(tool.id);
+      card.setAttribute('data-pos', String(positionOf(index)));
+      card.setAttribute('data-state', state);
+      card.setAttribute('aria-hidden', index === active ? 'false' : 'true');
+      card.setAttribute('tabindex', index === active ? '0' : '-1');
+
+      var dot = dotsEl.children[index];
+      dot.setAttribute('aria-current', String(index === active));
+      dot.setAttribute('data-state', state);
+    });
+
+    var done = confirmedCount();
+    statusEl.textContent =
       done === tools.length
-        ? 'All three tools confirmed. You’re fully set up — nice work.'
-        : done +
-          ' of ' +
-          tools.length +
-          ' confirmed. Open each tool and tick “I’ve got access” once you’re in.';
-    progressPanel.classList.toggle('panel--complete', done === tools.length);
+        ? 'All ' + tools.length + ' unlocked — you’re set up.'
+        : done + ' of ' + tools.length + ' unlocked';
 
-    // Keep the open detail panel's state in sync with the cards.
     var openId = detail.getAttribute('data-id');
     if (openId) syncDetailButton(openId);
+  }
+
+  function goTo(index) {
+    active = (index + tools.length) % tools.length;
+    paint();
   }
 
   /* --------------------------------------------------------------- detail */
@@ -277,7 +296,7 @@
       '</button>' +
       '<div class="detail__inner">' +
       '<div class="detail__head">' +
-      '<span class="card__icon">' +
+      '<span class="detail__emblem">' +
       icon(tool.icon) +
       '</span>' +
       '<div>' +
@@ -396,18 +415,12 @@
       : 'I’ve got access';
   }
 
-  var lastCard = null;
-
-  function openDetail(id) {
-    var tool = tools.filter(function (item) {
-      return item.id === id;
-    })[0];
+  function openDetail(index) {
+    var tool = tools[index];
     if (!tool) return;
+    var card = deckEl.children[index];
 
-    var card = cardsEl.querySelector('.card[data-id="' + id + '"]');
-    lastCard = card;
-
-    detail.setAttribute('data-id', id);
+    detail.setAttribute('data-id', tool.id);
     detail.setAttribute('data-accent', tool.accent);
     detail.innerHTML = detailMarkup(tool);
 
@@ -420,14 +433,17 @@
       card.classList.add('is-source');
       var from = card.getBoundingClientRect();
       var to = detail.getBoundingClientRect();
-      var dx = from.left - to.left;
-      var dy = from.top - to.top;
-      var sx = from.width / to.width;
-      var sy = from.height / to.height;
-
       detail.style.transition = 'none';
       detail.style.transform =
-        'translate(' + dx + 'px,' + dy + 'px) scale(' + sx + ',' + sy + ')';
+        'translate(' +
+        (from.left - to.left) +
+        'px,' +
+        (from.top - to.top) +
+        'px) scale(' +
+        from.width / to.width +
+        ',' +
+        from.height / to.height +
+        ')';
       requestAnimationFrame(function () {
         detail.style.transition = 'transform 0.42s cubic-bezier(0.22,0.85,0.25,1)';
         detail.style.transform = 'none';
@@ -436,18 +452,17 @@
 
     detail.setAttribute('tabindex', '-1');
     detail.focus({ preventScroll: true });
-    document.addEventListener('keydown', onKeydown);
+    document.addEventListener('keydown', onDetailKeydown);
   }
 
   function closeDetail() {
     if (!overlay.classList.contains('is-open')) return;
-    var id = detail.getAttribute('data-id');
-    var card = lastCard;
+    var card = deckEl.querySelector('.pcard.is-source');
 
     overlay.classList.remove('is-open');
     overlay.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
-    document.removeEventListener('keydown', onKeydown);
+    document.removeEventListener('keydown', onDetailKeydown);
 
     if (card && !prefersReducedMotion()) {
       var from = card.getBoundingClientRect();
@@ -465,21 +480,22 @@
         ')';
     }
 
-    window.setTimeout(function () {
-      detail.style.transition = 'none';
-      detail.style.transform = 'none';
-      detail.removeAttribute('data-id');
-      detail.innerHTML = '';
-      var fresh = id && cardsEl.querySelector('.card[data-id="' + id + '"]');
-      if (fresh) {
-        fresh.classList.remove('is-source');
-        fresh.focus({ preventScroll: true });
-      }
-      lastCard = null;
-    }, prefersReducedMotion() ? 0 : 320);
+    window.setTimeout(
+      function () {
+        detail.style.transition = 'none';
+        detail.style.transform = 'none';
+        detail.removeAttribute('data-id');
+        detail.innerHTML = '';
+        if (card) {
+          card.classList.remove('is-source');
+          card.focus({ preventScroll: true });
+        }
+      },
+      prefersReducedMotion() ? 0 : 320
+    );
   }
 
-  function onKeydown(event) {
+  function onDetailKeydown(event) {
     if (event.key === 'Escape') closeDetail();
   }
 
@@ -492,10 +508,54 @@
 
   /* --------------------------------------------------------------- events */
 
-  cardsEl.addEventListener('click', function (event) {
-    var card = event.target.closest('.card');
-    if (card) openDetail(card.getAttribute('data-id'));
+  deckEl.addEventListener('click', function (event) {
+    var card = event.target.closest('.pcard');
+    if (!card) return;
+    var index = Number(card.getAttribute('data-index'));
+    // A side card steps into the middle; the middle card opens.
+    if (index === active) openDetail(index);
+    else goTo(index);
   });
+
+  dotsEl.addEventListener('click', function (event) {
+    var dot = event.target.closest('.dot');
+    if (dot) goTo(Number(dot.getAttribute('data-index')));
+  });
+
+  document.getElementById('prevBtn').innerHTML = icon('left');
+  document.getElementById('nextBtn').innerHTML = icon('right');
+  document.getElementById('prevBtn').addEventListener('click', function () {
+    goTo(active - 1);
+  });
+  document.getElementById('nextBtn').addEventListener('click', function () {
+    goTo(active + 1);
+  });
+
+  document.addEventListener('keydown', function (event) {
+    if (overlay.classList.contains('is-open')) return;
+    if (event.key === 'ArrowLeft') goTo(active - 1);
+    if (event.key === 'ArrowRight') goTo(active + 1);
+  });
+
+  // Swipe the deck on touch devices.
+  var touchX = null;
+  deckEl.addEventListener(
+    'touchstart',
+    function (event) {
+      touchX = event.changedTouches[0].clientX;
+    },
+    { passive: true }
+  );
+  deckEl.addEventListener(
+    'touchend',
+    function (event) {
+      if (touchX === null) return;
+      var delta = event.changedTouches[0].clientX - touchX;
+      if (Math.abs(delta) > 45) goTo(active + (delta < 0 ? 1 : -1));
+      touchX = null;
+    },
+    { passive: true }
+  );
 
   overlay.addEventListener('click', function (event) {
     if (event.target === overlay || event.target.closest('[data-close]')) {
@@ -518,13 +578,14 @@
     if (confirmBtn) {
       var isDone = stateOf(id) === 'done';
       saveProgress(id, {
-        openedAt: (progress[id] && progress[id].openedAt) || new Date().toISOString(),
+        openedAt:
+          (progress[id] && progress[id].openedAt) || new Date().toISOString(),
         confirmedAt: isDone ? null : new Date().toISOString()
       });
     }
   });
 
-  document.getElementById('themeToggle').addEventListener('click', function () {
+  themeToggle.addEventListener('click', function () {
     setTheme(
       document.documentElement.getAttribute('data-theme') === 'dark'
         ? 'light'
@@ -532,21 +593,13 @@
     );
   });
 
-  document.getElementById('resetProgress').addEventListener('click', function () {
-    progress = {};
-    try {
-      localStorage.removeItem(STORE_KEY);
-    } catch (err) {}
-    render();
-  });
-
   /* ----------------------------------------------------------------- boot */
 
-  document.getElementById('brandIcon').innerHTML = ICONS.map;
   document.getElementById('iconMoon').innerHTML = ICONS.moon;
   document.getElementById('iconSun').innerHTML = ICONS.sun;
-  document.getElementById('toolCount').textContent = tools.length + ' tools';
 
   initTheme();
-  render();
+  build();
+  // Start on the middle card of the three.
+  goTo(Math.floor(tools.length / 2));
 })();

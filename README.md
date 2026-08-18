@@ -26,6 +26,12 @@ All copy comes from the three articles in the community space
   the card, its number badge turns lime, and the counter under the row reads
   "n of 3 unlocked".
 
+## Embedding it
+
+Live at <https://goat-academy-felix-tools.vercel.app/>. See **[EMBED.md](EMBED.md)**
+for the iframe snippet to paste into Mighty Networks, and open `embed.html` to
+test the embed locally.
+
 ## Running it
 
 No build step, no dependencies. Open `index.html`, or serve the folder:

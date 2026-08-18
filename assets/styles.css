@@ -1228,6 +1228,27 @@ html[data-theme='dark'] .theme-toggle .icon-moon {
 }
 
 /* ==========================================================================
+   Embedded in an iframe
+   The host sizes the frame from the height we post, so the page must lay out
+   to its natural height and never size anything from the viewport height.
+   ========================================================================== */
+
+.is-embedded,
+.is-embedded body {
+  height: auto;
+  min-height: 0;
+}
+
+.is-embedded .stage {
+  flex: 0 0 auto;
+  padding-bottom: clamp(1.25rem, 2vh, 2rem);
+}
+
+.is-embedded .tools {
+  --card-w-max: 460px;
+}
+
+/* ==========================================================================
    Responsive
    ========================================================================== */
 

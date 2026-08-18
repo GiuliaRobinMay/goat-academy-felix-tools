@@ -10,6 +10,7 @@
 (function () {
   'use strict';
 
+  var embedded = window.parent && window.parent !== window;
   var STORE_KEY = 'felixTools.progress.v1';
   var THEME_KEY = 'felixTools.theme';
   var tools = window.FELIX_TOOLS || [];
@@ -132,6 +133,23 @@
       } catch (err) {
         /* best effort only */
       }
+    }
+  }
+
+  /**
+   * When embedded, tell the host page how tall we are so the iframe can size
+   * itself. Sent on load, on resize, and whenever the panel opens or closes.
+   */
+  function reportHeight() {
+    if (!embedded) return;
+    // In embedded mode the page is not stretched to the viewport, so the body
+    // box is the true content height — and it never depends on the iframe's
+    // own height, which would otherwise feed back into the next measurement.
+    var height = Math.ceil(document.body.getBoundingClientRect().height);
+    try {
+      window.parent.postMessage({ type: 'felix-tools:height', height: height }, '*');
+    } catch (err) {
+      /* cross-origin parent — nothing to do */
     }
   }
 
@@ -429,6 +447,7 @@
       });
     }
 
+    reportHeight();
     detail.setAttribute('tabindex', '-1');
     detail.focus({ preventScroll: true });
     document.addEventListener('keydown', onDetailKeydown);
@@ -536,6 +555,15 @@
   document.getElementById('iconMoon').innerHTML = ICONS.moon;
   document.getElementById('iconSun').innerHTML = ICONS.sun;
 
+  if (embedded) document.documentElement.classList.add('is-embedded');
+
   initTheme();
   build();
+
+  reportHeight();
+  window.addEventListener('resize', reportHeight);
+  window.addEventListener('load', reportHeight);
+  if (window.ResizeObserver) {
+    new ResizeObserver(reportHeight).observe(document.documentElement);
+  }
 })();

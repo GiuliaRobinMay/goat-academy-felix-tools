@@ -11,9 +11,10 @@ All copy comes from the three articles in the community space
 
 ## What it does
 
-- Three cards side by side, labelled **Tool one**, **Tool two** and **Tool
-  three**, so the set reads as three at a glance. Nothing rotates or moves on
-  its own.
+- Three cards side by side, each under a numbered badge — **1**, **2**, **3** —
+  so the set reads as three at a glance. Nothing rotates or moves on its own.
+- The cards size themselves to fill the row and whatever height is left below
+  the masthead, and sit toward the top of the page.
 - Clicking a card zooms it up out of its own position into the full setup
   guide — steps, links, walkthrough video and support contact. Hover lifts the
   card, the press pushes the zoom a little further, and closing drops it back
@@ -22,8 +23,8 @@ All copy comes from the three articles in the community space
   member's choice.
 - Access tracking: opening a tool's link marks it as *opened*, and the
   **"I've got access"** button marks it *confirmed*. A green seal appears on
-  the card, its "Tool one" label turns lime, and the counter under the row
-  reads "n of 3 unlocked".
+  the card, its number badge turns lime, and the counter under the row reads
+  "n of 3 unlocked".
 
 ## Running it
 
@@ -48,7 +49,7 @@ To change any wording, link or badge, edit `assets/data.js` only.
 ## Adding a tool
 
 Append an object to `window.FELIX_TOOLS` in `assets/data.js`. The row reads
-the list at load: the card, its "Tool four" label, the counter and the
+the list at load: the card, its number badge, the counter and the
 "n of N unlocked" line all follow.
 
 The row is a three-column grid. A fourth tool wraps onto a second row of its

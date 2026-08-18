@@ -181,7 +181,6 @@
   var detail = document.getElementById('detail');
   var themeToggle = document.getElementById('themeToggle');
   var progressChip = document.getElementById('progressChip');
-  var ORDINALS = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight'];
 
   function cardMarkup(tool, index) {
     // Corner pips, the way a playing card carries its rank and suit.
@@ -194,9 +193,11 @@
     return (
       '<article class="tool" data-id="' +
       esc(tool.id) +
+      '" data-accent="' +
+      esc(tool.accent) +
       '">' +
-      '<p class="tool__step">Tool ' +
-      (ORDINALS[index] || index + 1) +
+      '<p class="tool__num"><span class="visually-hidden">Tool </span>' +
+      (index + 1) +
       '</p>' +
       '<button class="pcard" type="button" data-id="' +
       esc(tool.id) +

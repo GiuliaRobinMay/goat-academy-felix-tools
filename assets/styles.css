@@ -160,7 +160,7 @@ button {
 }
 
 .masthead {
-  padding: 1.5rem clamp(1rem, 4vw, 2.5rem) 0.6rem;
+  padding: clamp(1rem, 2vh, 1.4rem) clamp(1rem, 3vw, 2rem) 0.4rem;
 }
 
 .masthead__row {
@@ -255,21 +255,22 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: clamp(1.4rem, 3vh, 2rem);
-  padding: clamp(1.25rem, 3vh, 2.25rem) clamp(1rem, 4vw, 2.5rem)
-    clamp(1.5rem, 3vh, 2.25rem);
+  justify-content: flex-start;
+  gap: clamp(0.9rem, 2vh, 1.4rem);
+  padding: clamp(0.75rem, 2vh, 1.5rem) clamp(1rem, 3vw, 2rem)
+    clamp(1rem, 2vh, 1.5rem);
 }
 
 .tools {
-  width: min(100%, 1120px);
+  width: min(100%, 1500px);
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(1rem, 2.4vw, 2rem);
+  gap: clamp(0.9rem, 2vw, 1.75rem);
   align-items: start;
-  justify-items: center;
-  /* as large as the row allows, without outgrowing the viewport height */
-  --card-w-max: min(380px, calc(60vh * 0.7));
+  /* Fill the row, then the leftover height: --chrome is everything above and
+     below the cards (banner, masthead, badge, counter, padding). */
+  --chrome: 290px;
+  --card-w-max: min(520px, calc((100vh - var(--chrome)) * 0.7));
 }
 
 .tool {
@@ -278,31 +279,52 @@ button {
   gap: clamp(0.6rem, 1.2vh, 0.9rem);
 }
 
-/* "Tool one", "Tool two", "Tool three" — so the set of three reads at a glance */
-.tool__step {
+/* 1 · 2 · 3 — a badge above each card, so the set reads as three at a glance */
+.tool__num {
+  --size: clamp(38px, 3.2vw, 52px);
   margin: 0;
-  padding: 0.35rem 0.85rem;
-  border-radius: 999px;
-  font-size: clamp(0.6rem, 0.85vw, 0.7rem);
+  width: var(--size);
+  height: var(--size);
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: calc(var(--size) * 0.46);
   font-weight: 800;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--text-faint);
-  border: 1px solid var(--border);
-  background: var(--surface);
-  white-space: nowrap;
-  transition: color 0.25s var(--ease), border-color 0.25s var(--ease);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--tint);
+  background: radial-gradient(
+    120% 120% at 50% 0%,
+    color-mix(in srgb, var(--tint) 18%, var(--surface)),
+    var(--surface)
+  );
+  border: 1.5px solid color-mix(in srgb, var(--tint) 45%, transparent);
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--tint) 9%, transparent),
+    0 12px 26px -16px color-mix(in srgb, var(--tint) 90%, transparent);
+  transition: transform 0.3s var(--ease), color 0.3s var(--ease),
+    background 0.3s var(--ease), border-color 0.3s var(--ease),
+    box-shadow 0.3s var(--ease);
 }
 
-.tool:hover .tool__step,
-.tool:focus-within .tool__step {
-  color: var(--text);
-  border-color: var(--border-strong);
+.tool:hover .tool__num,
+.tool:focus-within .tool__num {
+  transform: translateY(-3px) scale(1.05);
+  color: #fff;
+  border-color: transparent;
+  background: linear-gradient(
+    150deg,
+    color-mix(in srgb, var(--tint) 92%, #fff),
+    color-mix(in srgb, var(--tint) 62%, #04222c)
+  );
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--tint) 14%, transparent),
+    0 16px 30px -16px color-mix(in srgb, var(--tint) 95%, transparent);
 }
 
-.tool[data-state='done'] .tool__step {
-  color: var(--lime);
-  border-color: color-mix(in srgb, var(--lime) 45%, transparent);
+.tool[data-state='done'] .tool__num {
+  color: var(--lime-chip-text);
+  background: var(--lime-chip-bg);
+  border-color: transparent;
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--lime-chip-bg) 18%, transparent);
 }
 
 /* ==========================================================================
@@ -365,19 +387,19 @@ button {
   box-shadow: var(--card-shadow-active);
 }
 
-.pcard[data-accent='blue'] {
+[data-accent='blue'] {
   --c1: var(--card-blue-1);
   --c2: var(--card-blue-2);
   --tint: var(--blue);
 }
 
-.pcard[data-accent='teal'] {
+[data-accent='teal'] {
   --c1: var(--card-teal-1);
   --c2: var(--card-teal-2);
   --tint: #22b8a6;
 }
 
-.pcard[data-accent='violet'] {
+[data-accent='violet'] {
   --c1: var(--card-violet-1);
   --c2: var(--card-violet-2);
   --tint: #8b7bf0;
@@ -820,24 +842,6 @@ html[data-theme='dark'] .theme-toggle .icon-moon {
   background: var(--surface);
   box-shadow: var(--shadow-lg);
   transform-origin: top left;
-}
-
-.detail[data-accent='blue'] {
-  --c1: var(--card-blue-1);
-  --c2: var(--card-blue-2);
-  --tint: var(--blue);
-}
-
-.detail[data-accent='teal'] {
-  --c1: var(--card-teal-1);
-  --c2: var(--card-teal-2);
-  --tint: #22b8a6;
-}
-
-.detail[data-accent='violet'] {
-  --c1: var(--card-violet-1);
-  --c2: var(--card-violet-2);
-  --tint: #8b7bf0;
 }
 
 .detail__inner {

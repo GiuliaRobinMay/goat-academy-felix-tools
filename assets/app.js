@@ -1,9 +1,8 @@
 /**
- * Felix's Tools — a three-card deck.
+ * Felix's Tools — three tools, side by side.
  *
- * Three cards fanned like a hand: one upright in the middle, the others
- * tilted left and right. Click a side card and it takes the middle. Click the
- * middle card and it opens into the full setup guide.
+ * One card per tool, laid out in a fixed row and labelled Tool one, two and
+ * three. Clicking a card zooms it up into the full setup guide.
  *
  * Members confirm they got into each tool; progress is kept in localStorage
  * and mirrored to an optional endpoint / parent frame so it can be collected.
@@ -176,14 +175,13 @@
 
   /* ----------------------------------------------------------------- deck */
 
-  var deckEl = document.getElementById('deck');
-  var dotsEl = document.getElementById('dots');
+  var toolsEl = document.getElementById('tools');
   var statusEl = document.getElementById('deckStatus');
   var overlay = document.getElementById('overlay');
   var detail = document.getElementById('detail');
   var themeToggle = document.getElementById('themeToggle');
   var progressChip = document.getElementById('progressChip');
-  var active = 0;
+  var ORDINALS = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight'];
 
   function cardMarkup(tool, index) {
     // Corner pips, the way a playing card carries its rank and suit.
@@ -194,6 +192,12 @@
       '</span>';
 
     return (
+      '<article class="tool" data-id="' +
+      esc(tool.id) +
+      '">' +
+      '<p class="tool__step">Tool ' +
+      (ORDINALS[index] || index + 1) +
+      '</p>' +
       '<button class="pcard" type="button" data-id="' +
       esc(tool.id) +
       '" data-index="' +
@@ -232,78 +236,29 @@
       '</span>' +
       '</span>' +
       '</span>' +
-      '</button>'
+      '</button>' +
+      '</article>'
     );
   }
 
   function build() {
-    deckEl.innerHTML = tools.map(cardMarkup).join('');
-    dotsEl.innerHTML = tools
-      .map(function (tool, index) {
-        return (
-          '<button class="dot" type="button" data-index="' +
-          index +
-          '" aria-label="' +
-          esc(tool.name) +
-          '"></button>'
-        );
-      })
-      .join('');
+    toolsEl.innerHTML = tools.map(cardMarkup).join('');
     paint();
   }
 
-  /**
-   * Where a card sits relative to the active one. The deck wraps, so with
-   * three cards the active one is always flanked by the other two rather
-   * than ending up at one end of the fan.
-   */
-  function positionOf(index) {
-    var count = tools.length;
-    var pos = (((index - active) % count) + count) % count;
-    return pos > count / 2 ? pos - count : pos;
-  }
-
-  /**
-   * Lay a card out for its slot in the fan. Everything is derived from the
-   * distance to the middle, so three tools and ten tools both work: cards
-   * further out sit lower, smaller and more tilted, and anything past the
-   * fourth ring is parked out of sight behind the deck.
-   */
-  function place(card, pos) {
-    var depth = Math.abs(pos);
-    var dir = pos < 0 ? -1 : 1;
-    var side =
-      depth === 0 ? 'center' : depth <= 2 ? 'side' : depth === 3 ? 'far' : 'hidden';
-
-    card.style.setProperty('--x', pos === 0 ? '0' : dir * (64 + (depth - 1) * 42));
-    card.style.setProperty('--y', depth * 28 + 'px');
-    card.style.setProperty('--r', dir * Math.min(depth, 4) * 10 + 'deg');
-    card.style.setProperty('--s', Math.max(1 - depth * 0.13, 0.55));
-    card.style.setProperty('--z', String(20 - depth));
-    card.setAttribute('data-side', side);
-    card.setAttribute('data-pos', String(pos));
-    return side;
-  }
-
-  /** Position every card relative to the active one, and refresh state. */
+  /** Refresh what changes as members work through the tools. */
   function paint() {
     tools.forEach(function (tool, index) {
-      var card = deckEl.children[index];
+      var cell = toolsEl.children[index];
       var state = stateOf(tool.id);
-      place(card, positionOf(index));
-      card.setAttribute('data-state', state);
-      card.setAttribute('aria-hidden', index === active ? 'false' : 'true');
-      card.setAttribute('tabindex', index === active ? '0' : '-1');
-
-      var dot = dotsEl.children[index];
-      dot.setAttribute('aria-current', String(index === active));
-      dot.setAttribute('data-state', state);
+      cell.setAttribute('data-state', state);
+      cell.querySelector('.pcard').setAttribute('data-state', state);
     });
 
     var done = confirmedCount();
     statusEl.textContent =
       done === tools.length
-        ? 'All ' + tools.length + ' unlocked — you’re set up.'
+        ? 'All ' + tools.length + ' unlocked — you\u2019re set up.'
         : done + ' of ' + tools.length + ' unlocked';
     progressChip.textContent = tools.length
       ? Math.round((done / tools.length) * 100) + '%'
@@ -311,11 +266,6 @@
 
     var openId = detail.getAttribute('data-id');
     if (openId) syncDetailButton(openId);
-  }
-
-  function goTo(index) {
-    active = (index + tools.length) % tools.length;
-    paint();
   }
 
   /* --------------------------------------------------------------- detail */
@@ -446,7 +396,7 @@
   function openDetail(index) {
     var tool = tools[index];
     if (!tool) return;
-    var card = deckEl.children[index];
+    var card = toolsEl.children[index].querySelector('.pcard');
 
     detail.setAttribute('data-id', tool.id);
     detail.setAttribute('data-accent', tool.accent);
@@ -485,7 +435,7 @@
 
   function closeDetail() {
     if (!overlay.classList.contains('is-open')) return;
-    var card = deckEl.querySelector('.pcard.is-source');
+    var card = toolsEl.querySelector('.pcard.is-source');
 
     overlay.classList.remove('is-open');
     overlay.setAttribute('aria-hidden', 'true');
@@ -536,54 +486,10 @@
 
   /* --------------------------------------------------------------- events */
 
-  deckEl.addEventListener('click', function (event) {
+  toolsEl.addEventListener('click', function (event) {
     var card = event.target.closest('.pcard');
-    if (!card) return;
-    var index = Number(card.getAttribute('data-index'));
-    // A side card steps into the middle; the middle card opens.
-    if (index === active) openDetail(index);
-    else goTo(index);
+    if (card) openDetail(Number(card.getAttribute('data-index')));
   });
-
-  dotsEl.addEventListener('click', function (event) {
-    var dot = event.target.closest('.dot');
-    if (dot) goTo(Number(dot.getAttribute('data-index')));
-  });
-
-  document.getElementById('prevBtn').innerHTML = icon('left');
-  document.getElementById('nextBtn').innerHTML = icon('right');
-  document.getElementById('prevBtn').addEventListener('click', function () {
-    goTo(active - 1);
-  });
-  document.getElementById('nextBtn').addEventListener('click', function () {
-    goTo(active + 1);
-  });
-
-  document.addEventListener('keydown', function (event) {
-    if (overlay.classList.contains('is-open')) return;
-    if (event.key === 'ArrowLeft') goTo(active - 1);
-    if (event.key === 'ArrowRight') goTo(active + 1);
-  });
-
-  // Swipe the deck on touch devices.
-  var touchX = null;
-  deckEl.addEventListener(
-    'touchstart',
-    function (event) {
-      touchX = event.changedTouches[0].clientX;
-    },
-    { passive: true }
-  );
-  deckEl.addEventListener(
-    'touchend',
-    function (event) {
-      if (touchX === null) return;
-      var delta = event.changedTouches[0].clientX - touchX;
-      if (Math.abs(delta) > 45) goTo(active + (delta < 0 ? 1 : -1));
-      touchX = null;
-    },
-    { passive: true }
-  );
 
   overlay.addEventListener('click', function (event) {
     if (event.target === overlay || event.target.closest('[data-close]')) {
@@ -631,6 +537,4 @@
 
   initTheme();
   build();
-  // Start with the middle card of the fan facing front.
-  goTo(Math.floor(tools.length / 2));
 })();

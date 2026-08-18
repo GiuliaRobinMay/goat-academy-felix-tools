@@ -17,6 +17,51 @@
  */
 window.FELIX_TOOLS = [
   {
+    id: 'winston',
+    code: 'WIN',
+    name: 'Winston App',
+    tagline: 'Your market cockpit',
+    kicker: 'Core platform',
+    summary:
+      'Felix’s own market app — over 10,800 stocks, metals and ETFs in one place, scored and then explained in plain English. Named after Felix’s golden retriever, and free for as long as you’re a GOAT Academy student.',
+    badge: 'Free for students',
+    badgeTone: 'lime',
+    accent: 'blue',
+    icon: 'chart',
+    art: 'cockpit',
+    ctaLabel: 'Open the Winston App',
+    ctaUrl: 'https://app.goatacademy.org/login',
+    highlights: [
+      'Stock Radar — a 0–100 GOAT quality score on 10,800+ US, UK and European stocks, across 11 exchanges including the LSE, Euronext and Xetra',
+      'Metal Minute — live gold, silver, platinum and copper prices, institutional buying, warehouse data and supply stress',
+      'ETF Edge — compare funds, spot overlap in your portfolio and find lower-cost alternatives',
+      'Daily market updates written in plain English (market analysis, not financial advice)',
+      'Free for the whole length of your GOAT Academy membership'
+    ],
+    steps: [
+      {
+        title: 'Visit the Winston app',
+        body: 'Go to <a href="https://app.goatacademy.org/login" target="_blank" rel="noopener">app.goatacademy.org/login</a>.'
+      },
+      {
+        title: 'Input your email',
+        body: 'Check your inbox for an email with a one-time authenticator link from <strong>felix@goatacademy.org</strong>.'
+      },
+      {
+        title: 'Click the link',
+        body: 'You get access to the Winston App and you will see the Breakout Scanner on the left tab.'
+      }
+    ],
+    note:
+      'For anything Winston-specific, the <strong>Winston support team</strong> is the fastest route — they can see your Winston account, your CSM can’t. Use the Customer Success chat inside the app, or their profile on Mighty.',
+    support: {
+      title: 'Still having trouble?',
+      body: 'Message our Winston App support team directly on Mighty.',
+      linkLabel: 'Message Winston support',
+      linkUrl: 'https://friends.goatacademy.org/members/40480342'
+    }
+  },
+  {
     id: 'breakout-scanner',
     code: 'SCAN',
     name: 'Visual Breakout Scanner',
@@ -64,51 +109,6 @@ window.FELIX_TOOLS = [
       body: 'Message your CSM or email <strong>felix@goatacademy.org</strong> and we’ll get you sorted.',
       linkLabel: 'Email felix@goatacademy.org',
       linkUrl: 'mailto:felix@goatacademy.org'
-    }
-  },
-  {
-    id: 'winston',
-    code: 'WIN',
-    name: 'Winston App',
-    tagline: 'Your market cockpit',
-    kicker: 'Core platform',
-    summary:
-      'Felix’s own market app — over 10,800 stocks, metals and ETFs in one place, scored and then explained in plain English. Named after Felix’s golden retriever, and free for as long as you’re a GOAT Academy student.',
-    badge: 'Free for students',
-    badgeTone: 'lime',
-    accent: 'blue',
-    icon: 'chart',
-    art: 'cockpit',
-    ctaLabel: 'Open the Winston App',
-    ctaUrl: 'https://app.goatacademy.org/login',
-    highlights: [
-      'Stock Radar — a 0–100 GOAT quality score on 10,800+ US, UK and European stocks, across 11 exchanges including the LSE, Euronext and Xetra',
-      'Metal Minute — live gold, silver, platinum and copper prices, institutional buying, warehouse data and supply stress',
-      'ETF Edge — compare funds, spot overlap in your portfolio and find lower-cost alternatives',
-      'Daily market updates written in plain English (market analysis, not financial advice)',
-      'Free for the whole length of your GOAT Academy membership'
-    ],
-    steps: [
-      {
-        title: 'Visit the Winston app',
-        body: 'Go to <a href="https://app.goatacademy.org/login" target="_blank" rel="noopener">app.goatacademy.org/login</a>.'
-      },
-      {
-        title: 'Input your email',
-        body: 'Check your inbox for an email with a one-time authenticator link from <strong>felix@goatacademy.org</strong>.'
-      },
-      {
-        title: 'Click the link',
-        body: 'You get access to the Winston App and you will see the Breakout Scanner on the left tab.'
-      }
-    ],
-    note:
-      'For anything Winston-specific, the <strong>Winston support team</strong> is the fastest route — they can see your Winston account, your CSM can’t. Use the Customer Success chat inside the app, or their profile on Mighty.',
-    support: {
-      title: 'Still having trouble?',
-      body: 'Message our Winston App support team directly on Mighty.',
-      linkLabel: 'Message Winston support',
-      linkUrl: 'https://friends.goatacademy.org/members/40480342'
     }
   },
   {

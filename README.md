@@ -11,16 +11,19 @@ All copy comes from the three articles in the community space
 
 ## What it does
 
-- Three cards fanned like a hand: one upright in the middle, the other two
-  tilted left and right. Click a side card and it takes the middle; click the
-  middle card and it enlarges out of its own position into the full setup
-  guide — steps, links, walkthrough video and support contact.
-- Arrow keys, the arrow buttons, the dots and swipe all move the deck.
+- Three cards side by side, labelled **Tool one**, **Tool two** and **Tool
+  three**, so the set reads as three at a glance. Nothing rotates or moves on
+  its own.
+- Clicking a card zooms it up out of its own position into the full setup
+  guide — steps, links, walkthrough video and support contact. Hover lifts the
+  card, the press pushes the zoom a little further, and closing drops it back
+  into place.
 - Dark and light mode. Dark is the default; the toggle top-right remembers the
   member's choice.
 - Access tracking: opening a tool's link marks it as *opened*, and the
   **"I've got access"** button marks it *confirmed*. A green seal appears on
-  the card and the counter under the deck reads "n of 3 unlocked".
+  the card, its "Tool one" label turns lime, and the counter under the row
+  reads "n of 3 unlocked".
 
 ## Running it
 
@@ -34,20 +37,24 @@ python3 -m http.server 8000
 
 | File | Purpose |
 | --- | --- |
-| `index.html` | Page shell — banner, masthead, deck, overlay |
+| `index.html` | Page shell — banner, masthead, tool row, overlay |
 | `assets/data.js` | **All content** — the tools, steps, links, videos |
 | `assets/art.js` | The drawn scene on each card face |
-| `assets/app.js` | Deck positioning, card-to-panel animation, progress tracking |
+| `assets/app.js` | Card rendering, card-to-panel zoom, progress tracking |
 | `assets/styles.css` | Design tokens (light base, dark overrides) and layout |
 
 To change any wording, link or badge, edit `assets/data.js` only.
 
 ## Adding a tool
 
-Append an object to `window.FELIX_TOOLS` in `assets/data.js`. The deck reads
-the list at load: the card, the dot, the counter and the "n of N unlocked"
-line all follow, and the fan geometry is computed from each card's distance to
-the middle, so four, five or ten tools fan correctly with no CSS to touch.
+Append an object to `window.FELIX_TOOLS` in `assets/data.js`. The row reads
+the list at load: the card, its "Tool four" label, the counter and the
+"n of N unlocked" line all follow.
+
+The row is a three-column grid. A fourth tool wraps onto a second row of its
+own, which is fine but leaves a gap — if the set grows past three, change
+`grid-template-columns` on `.tools` in `assets/styles.css` to match (e.g.
+`repeat(auto-fit, minmax(240px, 1fr))` for a flexible grid).
 
 Fields: `id` (unique, also the progress key), `code` (corner pip), `name`,
 `tagline`, `kicker`, `summary`, `accent` (`blue` / `teal` / `violet`), `icon`
